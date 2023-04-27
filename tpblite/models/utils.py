@@ -25,9 +25,7 @@ class QueryParser:
         try:
             self.html_source = self._sendRequest()
         except urllib.error.URLError:
-            raise ConnectionError(
-                "Could not establish connection with {}".format(self.url)
-            )
+            raise ConnectionError(f"Could not establish connection with {self.url}")
 
     @classmethod
     def search(
@@ -47,7 +45,7 @@ class QueryParser:
         if category == 0:
             category = "all"
         if last_48:
-            segments = ("top", "48h" + str(category))
+            segments = "top", f"48h{str(category)}"
         else:
             segments = ("top", str(category))
         return cls(base_url, segments)

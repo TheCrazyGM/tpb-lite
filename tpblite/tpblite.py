@@ -19,7 +19,7 @@ class TPB:
         self._search_url: Optional[str] = None
 
     def __str__(self) -> str:
-        return "TPB Object, base URL: {}".format(self.base_url)
+        return f"TPB Object, base URL: {self.base_url}"
 
     def search(
         self, query: str, page: int = 0, order: int = 99, category: int = 0
