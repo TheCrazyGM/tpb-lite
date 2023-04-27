@@ -9,9 +9,8 @@ DATA_DIR = Path(__file__).parents[1].joinpath('data')
 class TorrentsTestCase(unittest.TestCase):
 
     def setUp(self):
-        fobj = open(DATA_DIR.joinpath('torrent_test.html'), 'r')
-        contents = fobj.read()
-        fobj.close()
+        with open(DATA_DIR.joinpath('torrent_test.html'), 'r') as fobj:
+            contents = fobj.read()
         self.torrents = torrents.Torrents(contents)
 
     def test_str(self):
@@ -67,18 +66,16 @@ class TorrentsTestCase(unittest.TestCase):
 class TorrentsExceptionsTestCase(unittest.TestCase):
 
     def test_createTorrentListRaise(self):
-        fobj = open(DATA_DIR.joinpath('no_body.html'), 'r')
-        contents = fobj.read()
-        fobj.close()
+        with open(DATA_DIR.joinpath('no_body.html'), 'r') as fobj:
+            contents = fobj.read()
         self.assertRaises(ConnectionError, torrents.Torrents, contents)
 
 
 class TorrentTestCase(unittest.TestCase):
 
     def setUp(self):
-        fobj = open(DATA_DIR.joinpath('torrent_test.html'), 'r')
-        contents = fobj.read()
-        fobj.close()
+        with open(DATA_DIR.joinpath('torrent_test.html'), 'r') as fobj:
+            contents = fobj.read()
         self.torrent = torrents.Torrents(contents)[4]
 
     def test_str(self):

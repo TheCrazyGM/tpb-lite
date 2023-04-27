@@ -47,7 +47,7 @@ class Torrent:
         )
 
     def __repr__(self):
-        return "<Torrent object: {}>".format(self.title)
+        return f"<Torrent object: {self.title}>"
 
     def _getTitle(self):
         return self.html_row.findtext('.//a[@class="detLink"]')
@@ -85,11 +85,11 @@ class Torrent:
 
     def _getInfohash(self):
         infohash = re.search(r'btih:(.*?)&dn', self.magnetlink)
-        return infohash.group(1) if infohash else None
+        return infohash[1] if infohash else None
 
     def _getCategory(self):
         taglist = self.html_row.xpath('.//a[@title="More from this category"]/text()')
-        return '{} -> {}'.format(taglist[0], taglist[1]) if len(taglist) == 2 else None
+        return f'{taglist[0]} -> {taglist[1]}' if len(taglist) == 2 else None
 
 
 class Torrents:
@@ -104,10 +104,10 @@ class Torrents:
         self.list = self._createTorrentList()
 
     def __str__(self):
-        return "Torrents object: {} torrents".format(len(self.list))
+        return f"Torrents object: {len(self.list)} torrents"
 
     def __repr__(self):
-        return "<Torrents object: {} torrents>".format(len(self.list))
+        return f"<Torrents object: {len(self.list)} torrents>"
 
     def __iter__(self):
         return iter(self.list)
@@ -123,10 +123,7 @@ class Torrents:
         if root.find("body") is None:
             raise ConnectionError("Could not determine torrents (empty html body)")
         rows = root.xpath('//tr[td[@class="vertTh"]]')
-        torrents = []
-        for row in rows:
-            torrents.append(Torrent(row))
-        return torrents
+        return [Torrent(row) for row in rows]
 
     def getBestTorrent(self, min_seeds=30, min_filesize="1 GiB", max_filesize="4 GiB"):
         """Filters torrent list based on some constraints, then returns highest seeded torrent
@@ -145,16 +142,12 @@ class Torrents:
         sorted_list = sorted(filtered_list, key=lambda x: x.seeds, reverse=True)
         if len(sorted_list) > 0:
             return sorted_list[0]
-        else:
-            print("No torrents found given criteria")
-            return None
+        print("No torrents found given criteria")
+        return None
 
     def _filterTorrent(self, torrent, min_seeds, min_filesize, max_filesize):
-        if (
-            (torrent.seeds < min_seeds)
-            or (torrent.byte_size < min_filesize)
-            or (torrent.byte_size > max_filesize)
-        ):
-            return False
-        else:
-            return True
+        return (
+            torrent.seeds >= min_seeds
+            and torrent.byte_size >= min_filesize
+            and torrent.byte_size <= max_filesize
+        )

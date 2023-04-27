@@ -12,7 +12,7 @@ class OPTION:
                     for y in getattr(cls, opt).__dict__.keys()
                     if not (y.startswith("__") or y.startswith("printOptions"))
                 ]:
-                    print("{}.{}".format(opt, sub_opt))
+                    print(f"{opt}.{sub_opt}")
             else:
                 print(opt)
 
